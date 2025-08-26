@@ -11,8 +11,17 @@ import {
   PieChart,
   BarChart3
 } from "lucide-react";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const Dashboard = () => {
+  return (
+    <ProtectedRoute>
+      <DashboardContent />
+    </ProtectedRoute>
+  );
+};
+
+const DashboardContent = () => {
   // Sample data for demonstration
   const monthlySpending = [
     { category: "Food & Dining", amount: 850, color: "bg-primary" },

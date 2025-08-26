@@ -1,10 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Brain, Menu, X } from "lucide-react";
+import { Brain, Menu, X, LogOut, User } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b border-border z-50">
@@ -33,10 +41,29 @@ const Navigation = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost">Login</Button>
-            <Button asChild className="bg-gradient-primary shadow-glow">
-              <Link to="/dashboard">Get Started</Link>
-            </Button>
+            {user ? (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link to="/dashboard" className="flex items-center space-x-2">
+                    <User className="h-4 w-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                </Button>
+                <Button variant="ghost" onClick={handleSignOut} className="flex items-center space-x-2">
+                  <LogOut className="h-4 w-4" />
+                  <span>Sign Out</span>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link to="/auth">Login</Link>
+                </Button>
+                <Button asChild className="bg-gradient-primary shadow-glow">
+                  <Link to="/auth">Get Started</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -61,10 +88,29 @@ const Navigation = () => {
               Pricing
             </a>
             <div className="flex flex-col space-y-2 pt-4">
-              <Button variant="ghost">Login</Button>
-              <Button asChild className="bg-gradient-primary">
-                <Link to="/dashboard">Get Started</Link>
-              </Button>
+              {user ? (
+                <>
+                  <Button variant="ghost" asChild>
+                    <Link to="/dashboard" className="justify-start">
+                      <User className="h-4 w-4 mr-2" />
+                      Dashboard
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" onClick={handleSignOut} className="justify-start">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" asChild>
+                    <Link to="/auth">Login</Link>
+                  </Button>
+                  <Button asChild className="bg-gradient-primary">
+                    <Link to="/auth">Get Started</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         )}
